@@ -536,8 +536,8 @@
   <div class="loading-sub">Gerando análise clínica e enviando para a Dra. Camila</div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
 <script>
 // ── PDF cache global ──────────────────────────────────────────────────────────
 let _pdfB64Cache = '';
@@ -598,6 +598,7 @@ window.addEventListener('load', () => {
 });
 
 // ── Render scales ─────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
 document.querySelectorAll('[data-type="scale"]').forEach(row => {
   for (let i = 0; i <= 10; i++) {
     const btn = document.createElement('button');
@@ -619,6 +620,7 @@ document.querySelectorAll('[data-type="single"] .opt-btn').forEach(btn => {
 document.querySelectorAll('[data-type="multi"] .opt-btn').forEach(btn => {
   btn.onclick = () => btn.classList.toggle('selected');
 });
+}); // end DOMContentLoaded
 
 function getVal(key) {
   const el = document.querySelector(`[data-key="${key}"]`);
