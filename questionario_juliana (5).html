@@ -777,20 +777,6 @@ Seja direto, técnico, sem rodeios. Máximo 400 palavras.`,
   document.querySelectorAll('.section, .submit-area, .intro, .header').forEach(el => el.style.display = 'none');
   document.getElementById('success-screen').style.display = 'block';
   document.getElementById(emailOk ? 'email-status-ok' : 'email-status-fail').style.display = 'block';
-
-  // 6. Gerar PDF e baixar automaticamente no dispositivo de quem enviou
-  if (pdfB64) {
-    try {
-      const byteArr = Uint8Array.from(atob(pdfB64), c => c.charCodeAt(0));
-      const blob = new Blob([byteArr], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `pre_consulta_juliana_${new Date().toISOString().slice(0,10)}.pdf`;
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(url), 5000);
-    } catch(e) { console.error('PDF download error', e); }
-  }
 }
 </script>
 </body>
