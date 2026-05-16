@@ -4,302 +4,50 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pré-consulta – Juliana</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
-
-  :root {
-    --cream: #FAF7F2;
-    --warm: #F0EAE0;
-    --rose: #C97B6E;
-    --rose-light: #E8A99F;
-    --brown: #4A3728;
-    --brown-mid: #7A5C4A;
-    --green: #6B8F71;
-    --text: #2E1F14;
-    --muted: #9A8070;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--cream);
-    font-family: 'DM Sans', sans-serif;
-    color: var(--text);
-    min-height: 100vh;
-    padding: 0 0 60px;
-  }
-
-  .header {
-    background: var(--brown);
-    padding: 28px 24px 24px;
-    text-align: center;
-  }
-
-  .header p {
-    font-family: 'DM Serif Display', serif;
-    font-size: 22px;
-    color: var(--cream);
-    letter-spacing: 0.01em;
-  }
-
-  .header small {
-    display: block;
-    margin-top: 6px;
-    font-size: 12.5px;
-    color: var(--rose-light);
-    font-weight: 300;
-    letter-spacing: 0.05em;
-  }
-
-  .intro {
-    background: var(--warm);
-    padding: 16px 20px;
-    font-size: 13.5px;
-    color: var(--brown-mid);
-    line-height: 1.6;
-    border-bottom: 1px solid #DDD3C7;
-  }
-
-  .section {
-    margin: 20px 16px 0;
-    background: #fff;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid #E5DDD5;
-  }
-
-  .section-header {
-    padding: 14px 18px 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 1px solid #EEE8E2;
-  }
-
-  .section-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-
-  .icon-rose { background: #F5E4E1; }
-  .icon-green { background: #E1EDE3; }
-  .icon-blue { background: #E1E8F0; }
-  .icon-amber { background: #F0EAD6; }
-
-  .section-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 15px;
-    color: var(--brown);
-  }
-
-  .section-sub {
-    font-size: 11.5px;
-    color: var(--muted);
-    margin-top: 2px;
-    font-weight: 300;
-  }
-
-  .question-block {
-    padding: 14px 18px;
-    border-bottom: 1px solid #F2EDE8;
-  }
-
-  .question-block:last-child { border-bottom: none; }
-
-  .q-label {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--brown);
-    margin-bottom: 10px;
-    line-height: 1.5;
-  }
-
-  .q-hint {
-    font-size: 11.5px;
-    color: var(--muted);
-    margin-bottom: 10px;
-    font-style: italic;
-  }
-
-  /* Scale */
-  .scale-row {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
-  .scale-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    border: 1.5px solid #DDD3C7;
-    background: var(--cream);
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--brown-mid);
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: 'DM Sans', sans-serif;
-  }
-
-  .scale-btn:hover { border-color: var(--rose); color: var(--rose); }
-  .scale-btn.selected { background: var(--rose); border-color: var(--rose); color: #fff; }
-
-  .scale-labels {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 6px;
-    font-size: 10.5px;
-    color: var(--muted);
-  }
-
-  /* Options */
-  .options-list {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-  }
-
-  .opt-btn {
-    padding: 10px 14px;
-    border-radius: 8px;
-    border: 1.5px solid #DDD3C7;
-    background: var(--cream);
-    font-size: 13px;
-    color: var(--brown);
-    cursor: pointer;
-    text-align: left;
-    transition: all 0.15s;
-    font-family: 'DM Sans', sans-serif;
-    line-height: 1.4;
-  }
-
-  .opt-btn:hover { border-color: var(--rose-light); }
-  .opt-btn.selected { background: #F5E4E1; border-color: var(--rose); color: var(--brown); }
-  .opt-btn.multi.selected { background: #F5E4E1; border-color: var(--rose); }
-
-  /* Textarea */
-  textarea {
-    width: 100%;
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1.5px solid #DDD3C7;
-    background: var(--cream);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    color: var(--brown);
-    resize: none;
-    line-height: 1.6;
-    outline: none;
-    min-height: 72px;
-  }
-
-  textarea:focus { border-color: var(--rose-light); }
-
-  /* Submit */
-  .submit-area {
-    margin: 24px 16px 0;
-  }
-
-  .btn-submit {
-    width: 100%;
-    padding: 16px;
-    background: var(--brown);
-    color: var(--cream);
-    border: none;
-    border-radius: 12px;
-    font-family: 'DM Serif Display', serif;
-    font-size: 17px;
-    cursor: pointer;
-    transition: background 0.2s;
-    letter-spacing: 0.02em;
-  }
-
-  .btn-submit:hover { background: var(--brown-mid); }
-
-  /* Loading */
-  #loading-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(250,247,242,0.92);
-    z-index: 100;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-  }
-  #loading-overlay.active { display: flex; }
-
-  .spinner {
-    width: 40px; height: 40px;
-    border: 3px solid #DDD3C7;
-    border-top-color: var(--rose);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .loading-text {
-    font-family: 'DM Serif Display', serif;
-    font-size: 16px;
-    color: var(--brown);
-  }
-  .loading-sub {
-    font-size: 12px;
-    color: var(--muted);
-    text-align: center;
-    max-width: 220px;
-    line-height: 1.5;
-  }
-
-  /* Success */
-  #success-screen {
-    display: none;
-    margin: 24px 16px;
-    background: #fff;
-    border-radius: 16px;
-    border: 1px solid #E5DDD5;
-    padding: 32px 20px;
-    text-align: center;
-  }
-
-  .success-icon {
-    font-size: 40px;
-    margin-bottom: 12px;
-  }
-  .success-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 20px;
-    color: var(--brown);
-    margin-bottom: 8px;
-  }
-  .success-msg {
-    font-size: 13.5px;
-    color: var(--brown-mid);
-    line-height: 1.6;
-  }
-  .email-status {
-    margin-top: 16px;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 12.5px;
-    font-weight: 500;
-  }
-  .email-ok { background: #E1EDE3; color: #3A6B42; }
-  .email-fail { background: #FEF3CD; color: #7A5A00; }
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#FAF7F2;font-family:'DM Sans',sans-serif;color:#2E1F14;padding-bottom:60px}
+.header{background:#4A3728;padding:28px 24px;text-align:center}
+.header h1{font-family:'DM Serif Display',serif;font-size:22px;color:#FAF7F2}
+.header small{display:block;margin-top:6px;font-size:12px;color:#E8A99F;font-weight:300}
+.intro{background:#F0EAE0;padding:16px 20px;font-size:13.5px;color:#7A5C4A;line-height:1.6;border-bottom:1px solid #DDD3C7}
+.section{margin:20px 16px 0;background:#fff;border-radius:12px;border:1px solid #E5DDD5;overflow:hidden}
+.sec-header{padding:14px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #EEE8E2}
+.sec-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.i-rose{background:#F5E4E1}.i-blue{background:#E1E8F0}.i-amber{background:#F0EAD6}.i-green{background:#E1EDE3}
+.sec-title{font-family:'DM Serif Display',serif;font-size:15px;color:#4A3728}
+.sec-sub{font-size:11.5px;color:#9A8070;margin-top:2px}
+.qblock{padding:14px 18px;border-bottom:1px solid #F2EDE8}
+.qblock:last-child{border-bottom:none}
+.qlabel{font-size:13px;font-weight:500;color:#4A3728;margin-bottom:10px;line-height:1.5}
+.qhint{font-size:11.5px;color:#9A8070;margin-bottom:10px;font-style:italic}
+.scale-row{display:flex;gap:5px;flex-wrap:wrap}
+.scale-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid #DDD3C7;background:#FAF7F2;font-size:13px;font-weight:500;color:#7A5C4A;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
+.scale-btn:hover{border-color:#C97B6E;color:#C97B6E}
+.scale-btn.on{background:#C97B6E;border-color:#C97B6E;color:#fff}
+.scale-labels{display:flex;justify-content:space-between;margin-top:6px;font-size:10.5px;color:#9A8070}
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{padding:10px 14px;border-radius:8px;border:1.5px solid #DDD3C7;background:#FAF7F2;font-size:13px;color:#2E1F14;cursor:pointer;text-align:left;transition:all .15s;font-family:'DM Sans',sans-serif;line-height:1.4}
+.opt:hover{border-color:#E8A99F}
+.opt.on{background:#F5E4E1;border-color:#C97B6E}
+textarea{width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid #DDD3C7;background:#FAF7F2;font-family:'DM Sans',sans-serif;font-size:13px;color:#2E1F14;resize:none;outline:none;min-height:72px;line-height:1.6}
+textarea:focus{border-color:#E8A99F}
+.submit-area{margin:24px 16px 0}
+.btn-send{width:100%;padding:16px;background:#4A3728;color:#FAF7F2;border:none;border-radius:12px;font-family:'DM Serif Display',serif;font-size:17px;cursor:pointer;letter-spacing:.02em}
+.btn-send:hover{background:#7A5C4A}
+#success{display:none;margin:24px 16px;background:#fff;border-radius:16px;border:1px solid #E5DDD5;padding:32px 20px;text-align:center}
+.s-icon{font-size:40px;margin-bottom:12px}
+.s-title{font-family:'DM Serif Display',serif;font-size:20px;color:#4A3728;margin-bottom:8px}
+.s-msg{font-size:13.5px;color:#7A5C4A;line-height:1.6}
+.btn-wp{display:block;margin-top:16px;padding:14px;background:#25D366;color:#fff;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;font-family:'DM Sans',sans-serif}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <p>Pré-consulta — Juliana</p>
+  <h1>Pré-consulta — Juliana</h1>
   <small>Dra. Camila Lino · Psiquiatria</small>
 </div>
 
@@ -307,523 +55,270 @@
   Ju, antes da nossa conversa de hoje quero entender melhor como você está. Responde com calma, sem pressão — não tem resposta certa. Isso me ajuda a chegar mais preparada pra te ajudar 🤍
 </div>
 
-<!-- BLOCO 1: Medicação -->
+<!-- BLOCO 1 -->
 <div class="section">
-  <div class="section-header">
-    <div class="section-icon icon-rose">💊</div>
-    <div>
-      <div class="section-title">Como está com o remédio</div>
-      <div class="section-sub">Avalie as últimas semanas com Consiv 36 mg</div>
-    </div>
+  <div class="sec-header">
+    <div class="sec-icon i-rose">💊</div>
+    <div><div class="sec-title">Como está com o remédio</div><div class="sec-sub">Avalie as últimas semanas com Consiv 36 mg</div></div>
   </div>
-
-  <div class="question-block">
-    <div class="q-label">Foco e concentração durante o efeito do Consiv</div>
-    <div class="scale-row" data-key="foco" data-type="scale"></div>
-    <div class="scale-labels"><span>Péssimo</span><span>Ótimo</span></div>
-  </div>
-
-  <div class="question-block">
-    <div class="q-label">Ansiedade ao longo do dia</div>
-    <div class="scale-row" data-key="ansiedade" data-type="scale"></div>
-    <div class="scale-labels"><span>Nenhuma</span><span>Intensa</span></div>
-  </div>
-
-  <div class="question-block">
-    <div class="q-label">Fome / compulsão alimentar</div>
-    <div class="scale-row" data-key="fome" data-type="scale"></div>
-    <div class="scale-labels"><span>Nenhuma</span><span>Muito forte</span></div>
-  </div>
-
-  <div class="question-block">
-    <div class="q-label">Irritabilidade</div>
-    <div class="scale-row" data-key="irritabilidade" data-type="scale"></div>
-    <div class="scale-labels"><span>Nenhuma</span><span>Muita</span></div>
-  </div>
-
-  <div class="question-block">
-    <div class="q-label">Como é o cansaço quando o efeito do remédio passa?</div>
-    <div class="options-list" data-key="crash" data-type="single">
-      <button class="opt-btn">Suave, quase não percebo</button>
-      <button class="opt-btn">Fico um pouco cansada mas ok</button>
-      <button class="opt-btn">Fico bem cansada/irritada de repente</button>
-      <button class="opt-btn">É muito intenso, parece que apagou uma luz</button>
-    </div>
-  </div>
+  <div class="qblock"><div class="qlabel">Foco e concentração durante o efeito do Consiv</div>
+    <div class="scale-row" data-key="foco"></div><div class="scale-labels"><span>Péssimo</span><span>Ótimo</span></div></div>
+  <div class="qblock"><div class="qlabel">Ansiedade ao longo do dia</div>
+    <div class="scale-row" data-key="ansiedade"></div><div class="scale-labels"><span>Nenhuma</span><span>Intensa</span></div></div>
+  <div class="qblock"><div class="qlabel">Fome / compulsão alimentar</div>
+    <div class="scale-row" data-key="fome"></div><div class="scale-labels"><span>Nenhuma</span><span>Muito forte</span></div></div>
+  <div class="qblock"><div class="qlabel">Irritabilidade</div>
+    <div class="scale-row" data-key="irritabilidade"></div><div class="scale-labels"><span>Nenhuma</span><span>Muita</span></div></div>
+  <div class="qblock"><div class="qlabel">Como é o cansaço quando o efeito do remédio passa?</div>
+    <div class="opts" data-key="crash" data-type="single">
+      <button class="opt">Suave, quase não percebo</button>
+      <button class="opt">Fico um pouco cansada mas ok</button>
+      <button class="opt">Fico bem cansada/irritada de repente</button>
+      <button class="opt">É muito intenso, parece que apagou uma luz</button>
+    </div></div>
 </div>
 
-<!-- BLOCO 2: Sono e sonolência -->
+<!-- BLOCO 2 -->
 <div class="section">
-  <div class="section-header">
-    <div class="section-icon icon-blue">😴</div>
-    <div>
-      <div class="section-title">Sono e sonolência</div>
-      <div class="section-sub">Mesmo dormindo, como está o descanso?</div>
-    </div>
+  <div class="sec-header">
+    <div class="sec-icon i-blue">😴</div>
+    <div><div class="sec-title">Sono e sonolência</div><div class="sec-sub">Mesmo dormindo, como está o descanso?</div></div>
   </div>
-
-  <div class="question-block">
-    <div class="q-label">Sonolência durante o dia (nas últimas semanas)</div>
-    <div class="scale-row" data-key="sonolencia" data-type="scale"></div>
-    <div class="scale-labels"><span>Nenhuma</span><span>Muito forte</span></div>
-  </div>
-
-  <div class="question-block">
-    <div class="q-label">Quando a sonolência aparece mais?</div>
-    <div class="options-list" data-key="quando_sono" data-type="multi">
-      <button class="opt-btn multi">Logo de manhã, ao acordar</button>
-      <button class="opt-btn multi">No começo do efeito do Consiv</button>
-      <button class="opt-btn multi">Durante o pico do remédio</button>
-      <button class="opt-btn multi">Quando o efeito está passando</button>
-      <button class="opt-btn multi">À noite, antes de dormir</button>
-      <button class="opt-btn multi">O dia todo, independente do remédio</button>
-    </div>
-  </div>
-
-  <div class="question-block">
-    <div class="q-label">Você acorda sentindo que descansou?</div>
-    <div class="options-list" data-key="repouso" data-type="single">
-      <button class="opt-btn">Sim, acordo bem na maioria das vezes</button>
-      <button class="opt-btn">Às vezes sim, às vezes não</button>
-      <button class="opt-btn">Quase nunca, acordo cansada</button>
-      <button class="opt-btn">Nunca, sempre acordo exausta</button>
-    </div>
-  </div>
-
-  <div class="question-block">
-    <div class="q-label">Refrigerante ou café à noite (últimas semanas)</div>
-    <div class="options-list" data-key="cafeina_noite" data-type="single">
-      <button class="opt-btn">Consegui reduzir bastante</button>
-      <button class="opt-btn">Reduzi um pouco mas ainda tomo</button>
-      <button class="opt-btn">Continuo tomando como antes</button>
-      <button class="opt-btn">Tomei mais do que antes</button>
-    </div>
-  </div>
+  <div class="qblock"><div class="qlabel">Sonolência durante o dia (nas últimas semanas)</div>
+    <div class="scale-row" data-key="sonolencia"></div><div class="scale-labels"><span>Nenhuma</span><span>Muito forte</span></div></div>
+  <div class="qblock"><div class="qlabel">Quando a sonolência aparece mais?</div>
+    <div class="opts" data-key="quando_sono" data-type="multi">
+      <button class="opt">Logo de manhã, ao acordar</button>
+      <button class="opt">No começo do efeito do Consiv</button>
+      <button class="opt">Durante o pico do remédio</button>
+      <button class="opt">Quando o efeito está passando</button>
+      <button class="opt">À noite, antes de dormir</button>
+      <button class="opt">O dia todo, independente do remédio</button>
+    </div></div>
+  <div class="qblock"><div class="qlabel">Você acorda sentindo que descansou?</div>
+    <div class="opts" data-key="repouso" data-type="single">
+      <button class="opt">Sim, acordo bem na maioria das vezes</button>
+      <button class="opt">Às vezes sim, às vezes não</button>
+      <button class="opt">Quase nunca, acordo cansada</button>
+      <button class="opt">Nunca, sempre acordo exausta</button>
+    </div></div>
+  <div class="qblock"><div class="qlabel">Refrigerante ou café à noite (últimas semanas)</div>
+    <div class="opts" data-key="cafeina" data-type="single">
+      <button class="opt">Consegui reduzir bastante</button>
+      <button class="opt">Reduzi um pouco mas ainda tomo</button>
+      <button class="opt">Continuo tomando como antes</button>
+      <button class="opt">Tomei mais do que antes</button>
+    </div></div>
 </div>
 
-<!-- BLOCO 3: Burnout vs TDAH -->
+<!-- BLOCO 3 -->
 <div class="section">
-  <div class="section-header">
-    <div class="section-icon icon-amber">🔥</div>
-    <div>
-      <div class="section-title">Esgotamento — de onde vem?</div>
-      <div class="section-sub">Me ajuda a entender a origem do cansaço</div>
-    </div>
+  <div class="sec-header">
+    <div class="sec-icon i-amber">🔥</div>
+    <div><div class="sec-title">Esgotamento — de onde vem?</div><div class="sec-sub">Me ajuda a entender a origem do cansaço</div></div>
   </div>
-
-  <div class="question-block">
-    <div class="q-label">Onde o cansaço aparece mais?</div>
-    <div class="options-list" data-key="origem_cansaco" data-type="multi">
-      <button class="opt-btn multi">No trabalho</button>
-      <button class="opt-btn multi">Na faculdade / estágio</button>
-      <button class="opt-btn multi">Em casa, em tarefas do dia a dia</button>
-      <button class="opt-btn multi">Em tudo igualmente</button>
-      <button class="opt-btn multi">Não consigo identificar, é só um peso constante</button>
-    </div>
-  </div>
-
-  <div class="question-block">
-    <div class="q-label">Quando você pensa em ir pra faculdade, o que sente?</div>
-    <div class="options-list" data-key="faculdade" data-type="single">
-      <button class="opt-btn">Neutro, consigo ir tranquila</button>
-      <button class="opt-btn">Um pouco de resistência mas vou</button>
-      <button class="opt-btn">Peso, cansaço só de pensar</button>
-      <button class="opt-btn">Pavor, quero muito evitar</button>
-    </div>
-  </div>
-
-  <div class="question-block">
-    <div class="q-label">E quando pensa em ir pro trabalho?</div>
-    <div class="options-list" data-key="trabalho" data-type="single">
-      <button class="opt-btn">Neutro, consigo ir tranquila</button>
-      <button class="opt-btn">Um pouco de resistência mas vou</button>
-      <button class="opt-btn">Peso, cansaço só de pensar</button>
-      <button class="opt-btn">Pavor, quero muito evitar</button>
-    </div>
-  </div>
-
-  <div class="question-block">
-    <div class="q-label">Tem algo que ainda te dá prazer ou energia, mesmo que pequeno?</div>
-    <div class="q-hint">Ex: música, série, sair com alguém, descansar, qualquer coisa</div>
-    <textarea data-key="prazer" placeholder="Pode escrever aqui..."></textarea>
-  </div>
-
-  <div class="question-block">
-    <div class="q-label">Sua cabeça consegue "desligar" em algum momento do dia?</div>
-    <div class="options-list" data-key="desligar" data-type="single">
-      <button class="opt-btn">Sim, consigo descansar a cabeça</button>
-      <button class="opt-btn">Às vezes, mas é difícil</button>
-      <button class="opt-btn">Raramente, sempre tem algo rodando</button>
-      <button class="opt-btn">Nunca, minha cabeça não para</button>
-    </div>
-  </div>
+  <div class="qblock"><div class="qlabel">Onde o cansaço aparece mais?</div>
+    <div class="opts" data-key="origem" data-type="multi">
+      <button class="opt">No trabalho</button>
+      <button class="opt">Na faculdade / estágio</button>
+      <button class="opt">Em casa, em tarefas do dia a dia</button>
+      <button class="opt">Em tudo igualmente</button>
+      <button class="opt">Não consigo identificar, é só um peso constante</button>
+    </div></div>
+  <div class="qblock"><div class="qlabel">Quando você pensa em ir pra faculdade, o que sente?</div>
+    <div class="opts" data-key="faculdade" data-type="single">
+      <button class="opt">Neutro, consigo ir tranquila</button>
+      <button class="opt">Um pouco de resistência mas vou</button>
+      <button class="opt">Peso, cansaço só de pensar</button>
+      <button class="opt">Pavor, quero muito evitar</button>
+    </div></div>
+  <div class="qblock"><div class="qlabel">E quando pensa em ir pro trabalho?</div>
+    <div class="opts" data-key="trabalho" data-type="single">
+      <button class="opt">Neutro, consigo ir tranquila</button>
+      <button class="opt">Um pouco de resistência mas vou</button>
+      <button class="opt">Peso, cansaço só de pensar</button>
+      <button class="opt">Pavor, quero muito evitar</button>
+    </div></div>
+  <div class="qblock"><div class="qlabel">Tem algo que ainda te dá prazer ou energia?</div>
+    <div class="qhint">Ex: música, série, sair com alguém, qualquer coisa</div>
+    <textarea data-key="prazer" placeholder="Pode escrever aqui..."></textarea></div>
+  <div class="qblock"><div class="qlabel">Sua cabeça consegue "desligar" em algum momento?</div>
+    <div class="opts" data-key="desligar" data-type="single">
+      <button class="opt">Sim, consigo descansar a cabeça</button>
+      <button class="opt">Às vezes, mas é difícil</button>
+      <button class="opt">Raramente, sempre tem algo rodando</button>
+      <button class="opt">Nunca, minha cabeça não para</button>
+    </div></div>
 </div>
 
-<!-- BLOCO 4: Episódios de queda/fraqueza -->
+<!-- BLOCO 4 -->
 <div class="section">
-  <div class="section-header">
-    <div class="section-icon icon-green">⚡</div>
-    <div>
-      <div class="section-title">Episódios de fraqueza / queda</div>
-      <div class="section-sub">Importante para investigação clínica</div>
-    </div>
+  <div class="sec-header">
+    <div class="sec-icon i-green">⚡</div>
+    <div><div class="sec-title">Episódios de fraqueza / queda</div><div class="sec-sub">Importante para investigação clínica</div></div>
   </div>
-
-  <div class="question-block">
-    <div class="q-label">Esses episódios continuam acontecendo?</div>
-    <div class="options-list" data-key="quedas_freq" data-type="single">
-      <button class="opt-btn">Não aconteceu mais</button>
-      <button class="opt-btn">Acontece raramente (1x por semana ou menos)</button>
-      <button class="opt-btn">Acontece algumas vezes por semana</button>
-      <button class="opt-btn">Acontece quase todo dia</button>
-    </div>
-  </div>
-
-  <div class="question-block">
-    <div class="q-label">Como é a sensação nesses momentos?</div>
-    <div class="options-list" data-key="quedas_tipo" data-type="multi">
-      <button class="opt-btn multi">Fraqueza nas pernas de repente</button>
-      <button class="opt-btn multi">Sensação de "apagar" ou perder o fio</button>
-      <button class="opt-btn multi">Tontura ou enjoo antes</button>
-      <button class="opt-btn multi">Visão escura ou turva</button>
-      <button class="opt-btn multi">Coração acelerado antes</button>
-      <button class="opt-btn multi">Fraqueza muscular (braços, pescoço, mandíbula)</button>
-      <button class="opt-btn multi">Não consigo descrever, foi muito rápido</button>
-    </div>
-  </div>
-
-  <div class="question-block">
-    <div class="q-label">Tem algo que acontece antes ou que parece provocar?</div>
-    <div class="options-list" data-key="quedas_gatilho" data-type="multi">
-      <button class="opt-btn multi">Emoção forte (susto, risada, choro)</button>
-      <button class="opt-btn multi">Ficar de pé por muito tempo</button>
-      <button class="opt-btn multi">Calor ou ambiente fechado</button>
-      <button class="opt-btn multi">Não comer / estar com fome</button>
-      <button class="opt-btn multi">Não dormir bem</button>
-      <button class="opt-btn multi">Estresse ou ansiedade</button>
-      <button class="opt-btn multi">Não identifico gatilho</button>
-    </div>
-  </div>
-
-  <div class="question-block">
-    <div class="q-label">Algo mais que queira me contar sobre esses episódios?</div>
-    <textarea data-key="quedas_obs" placeholder="Qualquer detalhe que lembre..."></textarea>
-  </div>
+  <div class="qblock"><div class="qlabel">Esses episódios continuam acontecendo?</div>
+    <div class="opts" data-key="freq_queda" data-type="single">
+      <button class="opt">Não aconteceu mais</button>
+      <button class="opt">Raramente (1x por semana ou menos)</button>
+      <button class="opt">Algumas vezes por semana</button>
+      <button class="opt">Quase todo dia</button>
+    </div></div>
+  <div class="qblock"><div class="qlabel">Como é a sensação nesses momentos?</div>
+    <div class="opts" data-key="tipo_queda" data-type="multi">
+      <button class="opt">Fraqueza nas pernas de repente</button>
+      <button class="opt">Sensação de "apagar" ou perder o fio</button>
+      <button class="opt">Tontura ou enjoo antes</button>
+      <button class="opt">Visão escura ou turva</button>
+      <button class="opt">Coração acelerado antes</button>
+      <button class="opt">Fraqueza muscular (braços, pescoço, mandíbula)</button>
+      <button class="opt">Não consigo descrever, foi muito rápido</button>
+    </div></div>
+  <div class="qblock"><div class="qlabel">Tem algo que parece provocar?</div>
+    <div class="opts" data-key="gatilho_queda" data-type="multi">
+      <button class="opt">Emoção forte (susto, risada, choro)</button>
+      <button class="opt">Ficar de pé por muito tempo</button>
+      <button class="opt">Calor ou ambiente fechado</button>
+      <button class="opt">Não comer / estar com fome</button>
+      <button class="opt">Não dormir bem</button>
+      <button class="opt">Estresse ou ansiedade</button>
+      <button class="opt">Não identifico gatilho</button>
+    </div></div>
+  <div class="qblock"><div class="qlabel">Algo mais sobre esses episódios?</div>
+    <textarea data-key="obs_queda" placeholder="Qualquer detalhe que lembre..."></textarea></div>
 </div>
 
 <div class="submit-area">
-  <button class="btn-submit" id="btn-enviar" onclick="enviarQuestionario()">Enviar para a Dra. Camila ✓</button>
+  <button class="btn-send" onclick="gerarPDF()">Gerar PDF e enviar para a Dra. Camila ✓</button>
 </div>
 
-<div id="success-screen">
-  <div class="success-icon">🤍</div>
-  <div class="success-title">Enviado com sucesso!</div>
-  <div class="success-msg">A Dra. Camila já recebeu suas respostas e vai chegar na consulta preparada pra te ajudar.</div>
-  <div class="email-status email-ok" id="email-status-ok" style="display:none">✓ E-mail entregue com análise clínica</div>
-  <div class="email-status email-fail" id="email-status-fail" style="display:none">⚠️ Respostas salvas — a dra recebe na consulta</div>
-
-  <!-- Acesso restrito dra -->
-  <div id="pdf-area" style="margin-top:20px">
-    <input id="senha-pdf" type="password" placeholder="Código de acesso" style="width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid #DDD3C7;font-family:'DM Sans',sans-serif;font-size:13px;color:#2E1F14;background:#FAF7F2;outline:none;box-sizing:border-box">
-    <button onclick="baixarPdf()" style="margin-top:8px;width:100%;padding:12px;background:#4A3728;color:#FAF7F2;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer">📄 Baixar PDF</button>
-    <div id="senha-erro" style="display:none;margin-top:6px;font-size:12px;color:#C97B6E">Código incorreto.</div>
-  </div>
+<div id="success">
+  <div class="s-icon">📄</div>
+  <div class="s-title">PDF gerado!</div>
+  <div class="s-msg">O arquivo baixou no seu celular. Agora é só enviar pelo WhatsApp pra Dra. Camila 🤍</div>
+  <a class="btn-wp" href="https://wa.me/5511994230286?text=Dra+Camila+segue+meu+questionario+pre-consulta" target="_blank">📱 Abrir WhatsApp da Dra. Camila</a>
 </div>
 
-<div id="loading-overlay">
-  <div class="spinner"></div>
-  <div class="loading-text">Analisando respostas…</div>
-  <div class="loading-sub">Gerando análise clínica e enviando para a Dra. Camila</div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
 <script>
-// ── PDF cache global ──────────────────────────────────────────────────────────
-let _pdfB64Cache = '';
-let _linhasCache = [];
-let _analiseCache = '';
-let _dataCache = '';
-
-function baixarPdf() {
-  const senha = document.getElementById('senha-pdf').value;
-  if (senha !== 'camila274') {
-    document.getElementById('senha-erro').style.display = 'block';
-    return;
-  }
-  document.getElementById('senha-erro').style.display = 'none';
-
-  // Tentar carregar do storage se não tem em memória
-  if (!_pdfB64Cache) {
-    try {
-      const salvo = localStorage.getItem('juliana_respostas');
-      if (salvo) {
-        const dados = JSON.parse(salvo);
-        _linhasCache = dados.linhas;
-        _analiseCache = dados.analise;
-        _dataCache = dados.data;
-        _pdfB64Cache = gerarPdfBase64(_linhasCache, _dataCache, _analiseCache);
-      }
-    } catch(e) { console.error('storage error', e); }
-  }
-
-  if (!_pdfB64Cache) { alert('Nenhuma resposta encontrada. Peça para a Juliana preencher primeiro.'); return; }
-  try {
-    const byteArr = Uint8Array.from(atob(_pdfB64Cache), c => c.charCodeAt(0));
-    const blob = new Blob([byteArr], { type: 'application/pdf' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `pre_consulta_juliana_${new Date().toISOString().slice(0,10)}.pdf`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 5000);
-  } catch(e) { alert('Erro ao gerar PDF.'); }
-}
-    setTimeout(() => URL.revokeObjectURL(url), 5000);
-  } catch(e) { alert('Erro ao gerar PDF.'); }
-}
-
-// ── Modo médico — abre direto na tela de senha se já tem respostas salvas ────
-window.addEventListener('load', () => {
-  const salvo = localStorage.getItem('juliana_respostas');
-  if (salvo && window.location.hash === '#dra') {
-    document.querySelectorAll('.section, .submit-area, .intro, .header').forEach(el => el.style.display = 'none');
-    document.getElementById('success-screen').style.display = 'block';
-    document.getElementById('email-status-ok').style.display = 'none';
-    document.getElementById('email-status-fail').style.display = 'none';
-    document.querySelector('.success-icon').textContent = '🔐';
-    document.querySelector('.success-title').textContent = 'Área da Dra. Camila';
-    document.querySelector('.success-msg').textContent = 'Digite o código para baixar o PDF das respostas da Juliana.';
-  }
-});
-
-// ── Render scales ─────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-document.querySelectorAll('[data-type="scale"]').forEach(row => {
+// Escala
+document.querySelectorAll('.scale-row').forEach(row => {
   for (let i = 0; i <= 10; i++) {
-    const btn = document.createElement('button');
-    btn.className = 'scale-btn';
-    btn.textContent = i;
-    btn.onclick = () => {
-      row.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
+    const b = document.createElement('button');
+    b.className = 'scale-btn';
+    b.textContent = i;
+    b.onclick = () => {
+      row.querySelectorAll('.scale-btn').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
     };
-    row.appendChild(btn);
+    row.appendChild(b);
   }
 });
-document.querySelectorAll('[data-type="single"] .opt-btn').forEach(btn => {
+
+// Single
+document.querySelectorAll('[data-type="single"] .opt').forEach(btn => {
   btn.onclick = () => {
-    btn.closest('[data-type="single"]').querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
+    btn.closest('[data-type="single"]').querySelectorAll('.opt').forEach(x => x.classList.remove('on'));
+    btn.classList.add('on');
   };
 });
-document.querySelectorAll('[data-type="multi"] .opt-btn').forEach(btn => {
-  btn.onclick = () => btn.classList.toggle('selected');
+
+// Multi
+document.querySelectorAll('[data-type="multi"] .opt').forEach(btn => {
+  btn.onclick = () => btn.classList.toggle('on');
 });
-}); // end DOMContentLoaded
 
 function getVal(key) {
   const el = document.querySelector(`[data-key="${key}"]`);
   if (!el) return '—';
-  const t = el.dataset.type;
-  if (t === 'scale') { const s = el.querySelector('.selected'); return s ? s.textContent : '—'; }
-  if (t === 'single') { const s = el.querySelector('.selected'); return s ? s.textContent.trim() : '—'; }
-  if (t === 'multi') { const ss = [...el.querySelectorAll('.selected')].map(b => b.textContent.trim()); return ss.length ? ss.join(', ') : '—'; }
+  if (el.classList.contains('scale-row')) {
+    const s = el.querySelector('.on'); return s ? s.textContent : '—';
+  }
+  if (el.dataset.type === 'single') {
+    const s = el.querySelector('.on'); return s ? s.textContent.trim() : '—';
+  }
+  if (el.dataset.type === 'multi') {
+    const ss = [...el.querySelectorAll('.on')].map(b => b.textContent.trim());
+    return ss.length ? ss.join(', ') : '—';
+  }
   if (el.tagName === 'TEXTAREA') return el.value.trim() || '—';
   return '—';
 }
 
-function montarLinhas() {
-  return [
-    ['MEDICAÇÃO (Consiv 36 mg)', null],
-    ['Foco', `${getVal('foco')}/10`],
-    ['Ansiedade', `${getVal('ansiedade')}/10`],
-    ['Fome/compulsão', `${getVal('fome')}/10`],
-    ['Irritabilidade', `${getVal('irritabilidade')}/10`],
-    ['Crash ao fim do efeito', getVal('crash')],
-    ['SONO E SONOLÊNCIA', null],
-    ['Sonolência diurna', `${getVal('sonolencia')}/10`],
-    ['Quando ocorre mais', getVal('quando_sono')],
-    ['Acorda descansada', getVal('repouso')],
-    ['Cafeína/refri à noite', getVal('cafeina_noite')],
-    ['ESGOTAMENTO', null],
-    ['Onde aparece mais', getVal('origem_cansaco')],
-    ['Faculdade — sensação', getVal('faculdade')],
-    ['Trabalho — sensação', getVal('trabalho')],
-    ['Ainda tem prazer em algo', getVal('prazer')],
-    ['Cabeça desliga', getVal('desligar')],
-    ['EPISÓDIOS DE FRAQUEZA/QUEDA', null],
-    ['Frequência atual', getVal('quedas_freq')],
-    ['Tipo de sensação', getVal('quedas_tipo')],
-    ['Gatilhos', getVal('quedas_gatilho')],
-    ['Observações', getVal('quedas_obs')],
-  ];
-}
-
-function montarTexto(linhas) {
-  return linhas.map(([k, v]) => v === null ? `\n${k}` : `• ${k}: ${v}`).join('\n');
-}
-
-// ── Gerar PDF com jsPDF ───────────────────────────────────────────────────────
-function gerarPdfBase64(linhas, dataHoje, analise) {
+function gerarPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const W = doc.internal.pageSize.getWidth();
-  const marginL = 18, marginR = 18, maxW = W - marginL - marginR;
+  const L = 18, maxW = W - 36;
+  const data = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
 
   // Header
   doc.setFillColor(74, 55, 40);
-  doc.rect(0, 0, W, 28, 'F');
+  doc.rect(0, 0, W, 30, 'F');
   doc.setTextColor(250, 247, 242);
-  doc.setFontSize(14);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Pre-Consulta — Juliana Tavares', marginL, 12);
-  doc.setFontSize(9);
-  doc.setFont('helvetica', 'normal');
-  doc.text(`Dra. Camila Lino  CRM 274280 SP  ${dataHoje}`, marginL, 20);
+  doc.setFontSize(15); doc.setFont('helvetica', 'bold');
+  doc.text('Pre-Consulta — Juliana Tavares', L, 13);
+  doc.setFontSize(9); doc.setFont('helvetica', 'normal');
+  doc.text(`Dra. Camila Lino · CRM 274280 SP · ${data}`, L, 22);
 
-  let y = 36;
+  let y = 38;
 
-  // Análise clínica
-  doc.setTextColor(154, 128, 112);
-  doc.setFontSize(8);
-  doc.setFont('helvetica', 'bold');
-  doc.text('ANALISE CLINICA — IA PSIQUIATRICA', marginL, y);
-  y += 5;
+  const secao = (titulo) => {
+    if (y > 265) { doc.addPage(); y = 18; }
+    doc.setFillColor(240, 234, 224);
+    doc.rect(L, y - 4, maxW, 8, 'F');
+    doc.setTextColor(74, 55, 40); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+    doc.text(titulo.toUpperCase(), L + 2, y + 1);
+    y += 9;
+  };
 
-  doc.setFillColor(250, 247, 242);
-  const analiseLinhas = doc.splitTextToSize(analise.replace(/\*\*/g,''), maxW - 4);
-  const altAnalise = analiseLinhas.length * 5 + 8;
-  doc.roundedRect(marginL, y, maxW, altAnalise, 2, 2, 'F');
-  doc.setTextColor(46, 31, 20);
-  doc.setFontSize(9);
-  doc.setFont('helvetica', 'normal');
-  doc.text(analiseLinhas, marginL + 3, y + 5);
-  y += altAnalise + 8;
-
-  // Respostas
-  doc.setTextColor(154, 128, 112);
-  doc.setFontSize(8);
-  doc.setFont('helvetica', 'bold');
-  doc.text('RESPOSTAS DO QUESTIONARIO', marginL, y);
-  y += 5;
-
-  linhas.forEach(([k, v]) => {
+  const linha = (label, val) => {
     if (y > 270) { doc.addPage(); y = 18; }
-    if (v === null) {
-      // Seção
-      y += 3;
-      doc.setFillColor(240, 234, 224);
-      doc.rect(marginL, y - 4, maxW, 7, 'F');
-      doc.setTextColor(74, 55, 40);
-      doc.setFontSize(8.5);
-      doc.setFont('helvetica', 'bold');
-      doc.text(k.toUpperCase(), marginL + 2, y);
-      y += 6;
-    } else {
-      doc.setTextColor(46, 31, 20);
-      doc.setFontSize(8.5);
-      doc.setFont('helvetica', 'bold');
-      doc.text(`${k}:`, marginL + 2, y);
-      const labelW = doc.getTextWidth(`${k}: `);
-      doc.setFont('helvetica', 'normal');
-      const valLinhas = doc.splitTextToSize(v, maxW - labelW - 4);
-      doc.text(valLinhas, marginL + 2 + labelW, y);
-      y += valLinhas.length * 5 + 1;
-    }
-  });
+    doc.setTextColor(46, 31, 20); doc.setFontSize(8.5); doc.setFont('helvetica', 'bold');
+    doc.text(`${label}:`, L + 2, y);
+    const lw = doc.getTextWidth(`${label}: `);
+    doc.setFont('helvetica', 'normal');
+    const linhas = doc.splitTextToSize(val, maxW - lw - 2);
+    doc.text(linhas, L + 2 + lw, y);
+    y += linhas.length * 5 + 2;
+  };
+
+  secao('Medicação — Consiv 36mg');
+  linha('Foco', getVal('foco') + '/10');
+  linha('Ansiedade', getVal('ansiedade') + '/10');
+  linha('Fome/compulsão', getVal('fome') + '/10');
+  linha('Irritabilidade', getVal('irritabilidade') + '/10');
+  linha('Crash ao fim do efeito', getVal('crash'));
+
+  secao('Sono e Sonolência');
+  linha('Sonolência diurna', getVal('sonolencia') + '/10');
+  linha('Quando ocorre mais', getVal('quando_sono'));
+  linha('Acorda descansada', getVal('repouso'));
+  linha('Cafeína/refri à noite', getVal('cafeina'));
+
+  secao('Esgotamento');
+  linha('Onde aparece mais', getVal('origem'));
+  linha('Faculdade', getVal('faculdade'));
+  linha('Trabalho', getVal('trabalho'));
+  linha('Ainda tem prazer em algo', getVal('prazer'));
+  linha('Cabeça desliga', getVal('desligar'));
+
+  secao('Episódios de Fraqueza/Queda');
+  linha('Frequência atual', getVal('freq_queda'));
+  linha('Tipo de sensação', getVal('tipo_queda'));
+  linha('Gatilhos', getVal('gatilho_queda'));
+  linha('Observações', getVal('obs_queda'));
 
   // Footer
   doc.setFillColor(240, 234, 224);
-  doc.rect(0, 285, W, 12, 'F');
-  doc.setTextColor(154, 128, 112);
-  doc.setFontSize(7.5);
-  doc.setFont('helvetica', 'normal');
+  doc.rect(0, 284, W, 13, 'F');
+  doc.setTextColor(154, 128, 112); doc.setFontSize(7.5); doc.setFont('helvetica', 'normal');
   doc.text('Documento clinico confidencial · Nao compartilhar com terceiros', W / 2, 292, { align: 'center' });
 
-  return doc.output('datauristring').split(',')[1]; // base64 puro
-}
+  doc.save(`pre_consulta_juliana_${new Date().toISOString().slice(0,10)}.pdf`);
 
-// ── Main flow ─────────────────────────────────────────────────────────────────
-async function enviarQuestionario() {
-  document.getElementById('loading-overlay').classList.add('active');
-  document.getElementById('btn-enviar').disabled = true;
-
-  const linhas = montarLinhas();
-  const dadosTexto = montarTexto(linhas);
-  const dataHoje = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
-
-  // 1. Análise clínica com IA
-  let analise = '';
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: `Você é um assistente clínico de psiquiatria. Analise as respostas do questionário pré-consulta de Juliana Tavares para a Dra. Camila Lino (CRM 274280 SP).
-
-Contexto clínico: TDAH confirmado, ansiedade, hipersonia/sonolência diurna resistente, em uso de Consiv (metilfenidato OROS) 36mg + Vortioxetina noite + Ansitec noite. Histórico de episódios de fraqueza/queda ainda em investigação. Suspeita de burnout vs TDAH descompensado. Sensibilidade extrema à cafeína.
-
-Gere uma análise clínica objetiva em português com:
-1. IMPRESSÃO GERAL — O que as respostas sugerem sobre o momento atual
-2. MEDICAÇÃO — Como está respondendo ao 36mg; se há sinais de subdose, crash ou outros problemas
-3. SONO/SONOLÊNCIA — Padrão sugerido; hipóteses sobre causa residual
-4. BURNOUT vs TDAH — Diferenciação baseada na seletividade do cansaço
-5. EPISÓDIOS DE QUEDA — Perfil sugerido: ortostático, vasovagal, glicêmico, cataplexia ou outro
-6. PONTOS DE ATENÇÃO para a consulta de hoje
-
-Seja direto, técnico, sem rodeios. Máximo 400 palavras.`,
-        messages: [{ role: 'user', content: `Respostas:\n\n${dadosTexto}` }]
-      })
-    });
-    const json = await resp.json();
-    analise = (json.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
-  } catch { analise = '[Erro ao gerar análise — verifique manualmente]'; }
-
-  // 2. Gerar PDF em base64
-  let pdfB64 = '';
-  try {
-    pdfB64 = gerarPdfBase64(linhas, dataHoje, analise);
-    _pdfB64Cache = pdfB64;
-    _linhasCache = linhas;
-    _analiseCache = analise;
-    _dataCache = dataHoje;
-    // Salvar no localStorage para acesso posterior da dra
-    localStorage.setItem('juliana_respostas', JSON.stringify({
-      linhas, analise, data: dataHoje, ts: new Date().toISOString()
-    }));
-  } catch(e) { console.error('PDF error', e); }
-
-  // 3. Montar mensagem para EmailJS
-  const analiseHtml = analise.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  const dadosHtml = dadosTexto.replace(/\n/g, '<br>');
-
-  const message = `PRE-CONSULTA — JULIANA TAVARES\n${dataHoje}\n\n` +
-    `=== ANALISE CLINICA ===\n${analise}\n\n` +
-    `=== RESPOSTAS ===\n${dadosTexto}`;
-
-  // 4. Enviar via EmailJS
-  let emailOk = false;
-  try {
-    emailjs.init('CalEj6nW0MzNPnr0W');
-    const result = await emailjs.send('service_ra73zi2', 'template_fx37f5e', {
-      subject: `Pre-Consulta Juliana Tavares — ${dataHoje}`,
-      message: message,
-      to_email: 'dra.camilalino@gmail.com'
-    });
-    emailOk = result.status === 200;
-  } catch(e) {
-    console.error('EmailJS error:', e);
-    emailOk = false;
-  }
-
-  // 5. Tela de sucesso — Juliana vê só confirmação
-  document.getElementById('loading-overlay').classList.remove('active');
+  // Mostrar tela de sucesso
   document.querySelectorAll('.section, .submit-area, .intro, .header').forEach(el => el.style.display = 'none');
-  document.getElementById('success-screen').style.display = 'block';
-  document.getElementById(emailOk ? 'email-status-ok' : 'email-status-fail').style.display = 'block';
+  document.getElementById('success').style.display = 'block';
 }
 </script>
 </body>
