@@ -541,6 +541,9 @@
 <script>
 // ── PDF cache global ──────────────────────────────────────────────────────────
 let _pdfB64Cache = '';
+let _linhasCache = [];
+let _analiseCache = '';
+let _dataCache = '';
 
 function baixarPdf() {
   const senha = document.getElementById('senha-pdf').value;
@@ -549,7 +552,22 @@ function baixarPdf() {
     return;
   }
   document.getElementById('senha-erro').style.display = 'none';
-  if (!_pdfB64Cache) { alert('PDF não disponível.'); return; }
+
+  // Tentar carregar do storage se não tem em memória
+  if (!_pdfB64Cache) {
+    try {
+      const salvo = localStorage.getItem('juliana_respostas');
+      if (salvo) {
+        const dados = JSON.parse(salvo);
+        _linhasCache = dados.linhas;
+        _analiseCache = dados.analise;
+        _dataCache = dados.data;
+        _pdfB64Cache = gerarPdfBase64(_linhasCache, _dataCache, _analiseCache);
+      }
+    } catch(e) { console.error('storage error', e); }
+  }
+
+  if (!_pdfB64Cache) { alert('Nenhuma resposta encontrada. Peça para a Juliana preencher primeiro.'); return; }
   try {
     const byteArr = Uint8Array.from(atob(_pdfB64Cache), c => c.charCodeAt(0));
     const blob = new Blob([byteArr], { type: 'application/pdf' });
@@ -561,6 +579,23 @@ function baixarPdf() {
     setTimeout(() => URL.revokeObjectURL(url), 5000);
   } catch(e) { alert('Erro ao gerar PDF.'); }
 }
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  } catch(e) { alert('Erro ao gerar PDF.'); }
+}
+
+// ── Modo médico — abre direto na tela de senha se já tem respostas salvas ────
+window.addEventListener('load', () => {
+  const salvo = localStorage.getItem('juliana_respostas');
+  if (salvo && window.location.hash === '#dra') {
+    document.querySelectorAll('.section, .submit-area, .intro, .header').forEach(el => el.style.display = 'none');
+    document.getElementById('success-screen').style.display = 'block';
+    document.getElementById('email-status-ok').style.display = 'none';
+    document.getElementById('email-status-fail').style.display = 'none';
+    document.querySelector('.success-icon').textContent = '🔐';
+    document.querySelector('.success-title').textContent = 'Área da Dra. Camila';
+    document.querySelector('.success-msg').textContent = 'Digite o código para baixar o PDF das respostas da Juliana.';
+  }
+});
 
 // ── Render scales ─────────────────────────────────────────────────────────────
 document.querySelectorAll('[data-type="scale"]').forEach(row => {
@@ -747,7 +782,17 @@ Seja direto, técnico, sem rodeios. Máximo 400 palavras.`,
 
   // 2. Gerar PDF em base64
   let pdfB64 = '';
-  try { pdfB64 = gerarPdfBase64(linhas, dataHoje, analise); _pdfB64Cache = pdfB64; } catch(e) { console.error('PDF error', e); }
+  try {
+    pdfB64 = gerarPdfBase64(linhas, dataHoje, analise);
+    _pdfB64Cache = pdfB64;
+    _linhasCache = linhas;
+    _analiseCache = analise;
+    _dataCache = dataHoje;
+    // Salvar no localStorage para acesso posterior da dra
+    localStorage.setItem('juliana_respostas', JSON.stringify({
+      linhas, analise, data: dataHoje, ts: new Date().toISOString()
+    }));
+  } catch(e) { console.error('PDF error', e); }
 
   // 3. Montar mensagem para EmailJS
   const analiseHtml = analise.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
